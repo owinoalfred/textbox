@@ -1,5 +1,6 @@
-import React from "react";
-import { Article } from "./datasource.ts";
+
+import React, { useState } from "react";
+import { Article, articles } from "./datasource";
 
 // Defining the properties expected by the SearchResults component
 interface SearchResultsProps {
@@ -14,29 +15,22 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 }) => {
   // Function to highlight the search term within the text
   const highlightText = (text: string) => {
-    if (!searchTerm) return text; // If there's no search term, return the original text
-
-    // Splitting the text at occurrences of the search term (case insensitive)
+    if (!searchTerm) return text;
     const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
-
-    // Mapping each part, highlighting matches
-    return parts.map(
-      (part, index) =>
-        part.toLowerCase() === searchTerm.toLowerCase() ? (
-          <mark key={index}>{part}</mark> // Highlight matching parts
-        ) : (
-          part
-        ), // Keep non-matching parts as they are
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <mark key={index}>{part}</mark>
+      ) : (
+        part
+      ),
     );
   };
 
   return (
     <div className="results">
-      {/* If no articles are found, show a friendly message */}
       {articles.length === 0 ? (
         <p className="empty-results">No articles found</p>
       ) : (
-        // Display each article with the highlighted search term
         articles.map((article) => (
           <article key={article.id} className="article">
             <h2>{highlightText(article.title)}</h2>
@@ -45,6 +39,28 @@ const SearchResults: React.FC<SearchResultsProps> = ({
           </article>
         ))
       )}
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const filteredArticles = articles.filter(
+    article =>
+      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="app">
+      <input
+        type="text"
+        placeholder="Search articles..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <SearchResults articles={filteredArticles} searchTerm={searchTerm} />
     </div>
   );
 };
