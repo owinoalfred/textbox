@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import { Article, articles } from "./datasource";
+import "./App.css";
 
 // Defining the properties expected by the SearchResults component
 interface SearchResultsProps {
@@ -8,7 +8,7 @@ interface SearchResultsProps {
   searchTerm: string; // The user's search query
 }
 
-// Functional component to handle displaying search results
+// Functional component to handle displaying search results on the screen
 const SearchResults: React.FC<SearchResultsProps> = ({
   articles,
   searchTerm,
@@ -45,11 +45,11 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const filteredArticles = articles.filter(
-    article =>
+    (article) =>
       article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
